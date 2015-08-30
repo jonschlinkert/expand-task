@@ -1,7 +1,7 @@
 {
   "name": "expand-task",
   "description": "Expand and normalize task definitions in a declarative configuration.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "homepage": "https://github.com/jonschlinkert/expand-task",
   "author": "Jon Schlinkert (https://github.com/jonschlinkert)",
   "repository": "jonschlinkert/expand-task",
@@ -21,10 +21,10 @@
     "test": "mocha"
   },
   "dependencies": {
-    "app-base": "^0.1.1",
+    "base-methods": "^0.2.1",
     "clone-deep": "^0.2.2",
     "expand": "^0.1.2",
-    "expand-target": "^0.1.1",
+    "expand-target": "^0.1.2",
     "for-in": "^0.1.4",
     "kind-of": "^2.0.1",
     "mixin-deep": "^1.1.3"
