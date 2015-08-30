@@ -11,30 +11,27 @@ function Task(name, config, parent) {
   if (!(this instanceof Task)) {
     return new Task(name, config, parent);
   }
-
   if (typeof name !== 'string') {
     parent = config;
     config = name;
     name = null;
   }
-
+  var root = parent ? (parent.root || parent.orig) : this.orig;
   // Inherit `Node`
-  Node.call(this, null, parent);
-
+  Node.call(this, null, parent, root || this);
   // clone the original config object
   this.define('orig', clone(config || {}));
   // set the task name, or generate an id
   this.define('name', name || config.name || utils.nextId('task'));
   this.options = {};
   this.targets = {};
-
   // normalize the config object
-  this.normalize(config || {});
+  this.normalize(config || {}, parent);
 }
-
 Node.extend(Task);
 
-Task.prototype.normalize = function(config) {
+
+Task.prototype.normalize = function(config, parent) {
   config = config || {};
 
   if (utils.isTarget(config)) {
@@ -44,7 +41,7 @@ Task.prototype.normalize = function(config) {
     config = task;
   }
 
-  config = normalize('task', this)(config);
+  config = normalize('task', this)(config, parent);
 
   forIn(config, function (val, key) {
     if (utils.isTarget(val, key)) {
@@ -57,9 +54,11 @@ Task.prototype.normalize = function(config) {
   }, this);
 };
 
+
 Task.prototype.getTarget = function(name) {
   return this.targets[name];
 };
+
 
 Task.prototype.toConfig = function() {
   var res = {};
