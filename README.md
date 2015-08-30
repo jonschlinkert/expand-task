@@ -1,6 +1,6 @@
 # expand-task [![NPM version](https://badge.fury.io/js/expand-task.svg)](http://badge.fury.io/js/expand-task)
 
-> Expand task definitions in a declarative configuration.
+> Expand and normalize task definitions in a declarative configuration.
 
 ## Table of contents
 
