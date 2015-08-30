@@ -59,7 +59,7 @@ describe('tasks', function () {
         cwd: 'foo',
         one: {cwd: 'bar', src: '*.js'}
       });
-      config.targets.one.target.should.equal('one');
+      config.targets.one.name.should.equal('one');
     });
 
     it('should separate task options from targets:', function () {
@@ -78,7 +78,7 @@ describe('tasks', function () {
             options: {cwd: 'bar', ext: '.bar' },
             files: [{
               task: 'jshint',
-              target: 'one',
+              name: 'one',
               src: [],
               options: {cwd: 'foo', ext: '.bar' }
             }]
@@ -87,7 +87,7 @@ describe('tasks', function () {
             options: {cwd: 'baz', ext: '.bar' },
             files: [{
               task: 'jshint',
-              target: 'two',
+              name: 'two',
               src: [],
               options: {cwd: 'foo', ext: '.bar' }
             }]
