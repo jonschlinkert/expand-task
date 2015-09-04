@@ -1,5 +1,6 @@
 'use strict';
 
+/* deps: mocha */
 var util = require('util');
 var assert = require('assert');
 var should = require('should');
@@ -80,7 +81,7 @@ describe('tasks', function () {
               task: 'jshint',
               name: 'one',
               src: [],
-              options: {cwd: 'foo', ext: '.bar' }
+              options: {cwd: 'bar', ext: '.bar' }
             }]
           },
           two: {
@@ -89,7 +90,7 @@ describe('tasks', function () {
               task: 'jshint',
               name: 'two',
               src: [],
-              options: {cwd: 'foo', ext: '.bar' }
+              options: {cwd: 'baz', ext: '.bar' }
             }]
           }
         }
