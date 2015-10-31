@@ -46,8 +46,10 @@ Task.prototype.normalize = function(config, parent) {
   forIn(config, function (val, key) {
     if (utils.isTarget(val, key)) {
       this.targets[key] = new Target(key, val, this);
+
     } else if (utils.isNode(val, key)) {
       this.set(key, new Node(val, this));
+
     } else {
       this.set(key, val);
     }
