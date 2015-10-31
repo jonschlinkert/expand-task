@@ -1,7 +1,7 @@
 {
   "name": "expand-task",
   "description": "Expand and normalize task definitions in a declarative configuration.",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "homepage": "https://github.com/jonschlinkert/expand-task",
   "author": "Jon Schlinkert (https://github.com/jonschlinkert)",
   "repository": "jonschlinkert/expand-task",
@@ -21,21 +21,23 @@
     "test": "mocha"
   },
   "dependencies": {
-    "base-methods": "^0.2.1",
-    "clone-deep": "^0.2.2",
-    "expand": "^0.1.4",
-    "expand-target": "^0.2.0",
+    "base-methods": "^0.4.0",
+    "clone-deep": "^0.2.3",
+    "expand": "^0.3.2",
+    "expand-target": "^0.3.0",
     "for-in": "^0.1.4",
+    "isobject": "^2.0.0",
     "kind-of": "^2.0.1",
+    "lazy-cache": "^0.2.4",
     "mixin-deep": "^1.1.3"
   },
   "devDependencies": {
     "extend-shallow": "^2.0.1",
-    "mocha": "^2.3.0",
+    "mocha": "^2.3.3",
     "repeat-string": "^1.5.2",
     "should": "*",
-    "stringify-object": "^2.3.0",
-    "to-clipboard": "^0.1.0"
+    "stringify-object": "jonschlinkert/stringify-object",
+    "to-clipboard": "^0.2.0"
   },
   "keywords": [
     "config",
