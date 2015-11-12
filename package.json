@@ -11,7 +11,7 @@
   "license": "MIT",
   "files": [
     "index.js",
-    "lib"
+    "utils.js"
   ],
   "main": "index.js",
   "engines": {
@@ -21,23 +21,16 @@
     "test": "mocha"
   },
   "dependencies": {
-    "base-methods": "^0.4.0",
-    "clone-deep": "^0.2.3",
-    "expand": "^0.3.2",
-    "expand-target": "^0.3.0",
-    "for-in": "^0.1.4",
+    "define-property": "^0.2.5",
+    "expand-target": "^0.4.0",
+    "extend-shallow": "^2.0.1",
     "isobject": "^2.0.0",
-    "kind-of": "^2.0.1",
     "lazy-cache": "^0.2.4",
-    "mixin-deep": "^1.1.3"
+    "use": "^1.1.2"
   },
   "devDependencies": {
-    "extend-shallow": "^2.0.1",
     "mocha": "^2.3.3",
-    "repeat-string": "^1.5.2",
-    "should": "*",
-    "stringify-object": "jonschlinkert/stringify-object",
-    "to-clipboard": "^0.2.0"
+    "should": "*"
   },
   "keywords": [
     "config",

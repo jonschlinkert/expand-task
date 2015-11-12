@@ -1,75 +1,77 @@
 'use strict';
 
-var forIn = require('for-in');
-var clone = require('clone-deep');
+var use = require('use');
+var utils = require('./utils');
 var Target = require('expand-target');
-var normalize = require('./lib/normalize');
-var utils = require('./lib/utils');
-var Node = require('./lib/node');
 
-function Task(name, config, parent) {
-  if (!(this instanceof Task)) {
-    return new Task(name, config, parent);
+/**
+ * Create a new Task with the given `options`
+ *
+ * ```js
+ * var task = new Task({cwd: 'src'});
+ * task.expand({
+ *   site: {src: '*.hbs', dest: 'templates/'},
+ *   docs: {src: '*.md', dest: 'content/'}
+ * });
+ * ```
+ *
+ * @param {Object} `options`
+ * @api public
+ */
+
+function Task(options) {
+  utils.define(this, '_name', 'Task');
+  use(this);
+
+  this.options = options || {};
+  if (utils.isTask(options)) {
+    this.options = {};
+    this.expand(options);
+    return this;
   }
-  if (typeof name !== 'string') {
-    parent = config;
-    config = name;
-    name = null;
-  }
-  var root = parent ? (parent.root || parent.orig) : this.orig;
-  // Inherit `Node`
-  Node.call(this, null, parent, root || this);
-  // clone the original config object
-  this.define('orig', clone(config || {}));
-  // set the task name, or generate an id
-  this.define('name', name || config.name || utils.nextId('task'));
-  this.options = {};
-  this.targets = {};
-  // normalize the config object
-  this.normalize(config || {}, parent);
 }
-Node.extend(Task);
 
+/**
+ * Normalize tasks and src-dest mappings and glob patterns in
+ * task targets.
+ *
+ * @param {Object} `task`
+ * @return {Object}
+ * @api public
+ */
 
-Task.prototype.normalize = function(config, parent) {
-  config = config || {};
-
-  if (utils.isTarget(config)) {
-    var name = utils.nextId(this.name || 'target');
-    var task = {};
-    task[name] = config;
-    config = task;
-  }
-
-  config = normalize('task', this)(config, parent);
-
-  forIn(config, function (val, key) {
-    if (utils.isTarget(val, key)) {
-      this.targets[key] = new Target(key, val, this);
-
-    } else if (utils.isNode(val, key)) {
-      this.set(key, new Node(val, this));
-
+Task.prototype.expand = function(task) {
+  for (var key in task) {
+    var val = task[key];
+    if (utils.isTarget(val)) {
+      this.addTarget(key, val);
     } else {
-      this.set(key, val);
+      this[key] = val;
     }
-  }, this);
+  }
 };
 
+/**
+ * Add a target to the task.
+ *
+ * @param {String} `name`
+ * @param {Object} `config`
+ * @return {Object}
+ * @api public
+ */
 
-Task.prototype.getTarget = function(name) {
-  return this.targets[name];
+Task.prototype.addTarget = function(name, config) {
+  var target = new Target(this.options);
+  utils.define(target, 'name', name);
+
+  utils.run(this, 'target', target);
+  target.expand(config);
+
+  if (!(name in this)) {
+    this[name] = target;
+  }
+  return target;
 };
-
-
-Task.prototype.toConfig = function() {
-  var res = {};
-  forIn(this.targets, function (val, key) {
-    res[key] = val;
-  });
-  return res;
-};
-
 
 /**
  * Expose `Task`
