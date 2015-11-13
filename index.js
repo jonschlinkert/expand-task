@@ -44,11 +44,13 @@ function Task(options) {
 
 Task.prototype.addTargets = function(task) {
   for (var key in task) {
-    var val = task[key];
-    if (utils.isTarget(val)) {
-      this.addTarget(key, val);
-    } else {
-      this[key] = val;
+    if (task.hasOwnProperty(key)) {
+      var val = task[key];
+      if (utils.isTarget(val)) {
+        this.addTarget(key, val);
+      } else {
+        this[key] = val;
+      }
     }
   }
 };
