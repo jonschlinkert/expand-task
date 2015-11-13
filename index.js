@@ -1,46 +1,48 @@
 'use strict';
 
+var utils = require('expand-utils');
+var util = require('./utils');
 var use = require('use');
-var utils = require('./utils');
-var Target = require('expand-target');
 
 /**
  * Create a new Task with the given `options`
  *
  * ```js
  * var task = new Task({cwd: 'src'});
- * task.expand({
- *   site: {src: '*.hbs', dest: 'templates/'},
- *   docs: {src: '*.md', dest: 'content/'}
- * });
  * ```
- *
  * @param {Object} `options`
  * @api public
  */
 
 function Task(options) {
-  utils.define(this, '_name', 'Task');
+  util.define(this, '_name', 'Task');
+  util.define(this, 'isTask', true);
   use(this);
 
   this.options = options || {};
   if (utils.isTask(options)) {
     this.options = {};
-    this.expand(options);
+    this.addTargets(options);
     return this;
   }
 }
 
 /**
- * Normalize tasks and src-dest mappings and glob patterns in
- * task targets.
+ * Add targets to the task, while also normalizing src-dest mappings and
+ * expanding glob patterns in each target.
  *
- * @param {Object} `task`
+ * ```js
+ * task.addTargets({
+ *   site: {src: '*.hbs', dest: 'templates/'},
+ *   docs: {src: '*.md', dest: 'content/'}
+ * });
+ * ```
+ * @param {Object} `task` Task object where each key is a target or `options`.
  * @return {Object}
  * @api public
  */
 
-Task.prototype.expand = function(task) {
+Task.prototype.addTargets = function(task) {
   for (var key in task) {
     var val = task[key];
     if (utils.isTarget(val)) {
@@ -52,8 +54,15 @@ Task.prototype.expand = function(task) {
 };
 
 /**
- * Add a target to the task.
+ * Add a single target to the task, while also normalizing src-dest mappings and
+ * expanding glob patterns in the target.
  *
+ * ```js
+ * task.addTarget('foo', {
+ *   src: '*.hbs',
+ *   dest: 'templates/'
+ * });
+ * ```
  * @param {String} `name`
  * @param {Object} `config`
  * @return {Object}
@@ -61,11 +70,15 @@ Task.prototype.expand = function(task) {
  */
 
 Task.prototype.addTarget = function(name, config) {
-  var target = new Target(this.options);
-  utils.define(target, 'name', name);
+  if (typeof name !== 'string') {
+    throw new TypeError('addTarget expects name to be a string');
+  }
+
+  var target = new util.Target(this.options);
+  util.define(target, '_name', name);
 
   utils.run(this, 'target', target);
-  target.expand(config);
+  target.addFiles(config);
 
   if (!(name in this)) {
     this[name] = target;

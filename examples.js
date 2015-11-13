@@ -102,7 +102,7 @@ task.use(function fn(config)  {
   return fn;
 });
 
-task.expand({
+task.addTargets({
   options: {cwd: 'test/fixtures'},
   foo: {
     src: '*.txt',

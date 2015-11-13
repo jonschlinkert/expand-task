@@ -14,12 +14,12 @@ describe('tasks', function () {
 
   describe('targets', function () {
     it('should expose an "options" property', function () {
-      task.expand({});
+      task.addTargets({});
       assert(task.options);
     });
 
     it('should expose targets', function () {
-      task.expand({
+      task.addTargets({
         foo: {src: '*'},
         bar: {src: '*'}
       });
