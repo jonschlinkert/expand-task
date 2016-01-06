@@ -1,7 +1,8 @@
 'use strict';
 
+var define = require('define-property');
+var Target = require('expand-target');
 var utils = require('expand-utils');
-var util = require('./utils');
 var use = require('use');
 
 /**
@@ -9,14 +10,21 @@ var use = require('use');
  *
  * ```js
  * var task = new Task({cwd: 'src'});
+ * task.addTargets({
+ *   site: {src: ['*.hbs']},
+ *   blog: {src: ['*.md']}
+ * });
  * ```
  * @param {Object} `options`
  * @api public
  */
 
 function Task(options) {
-  util.define(this, '_name', 'Task');
-  util.define(this, 'isTask', true);
+  if (!(this instanceof Task)) {
+    return new Task(options);
+  }
+
+  utils.is(this, 'task');
   use(this);
 
   this.options = options || {};
@@ -43,6 +51,7 @@ function Task(options) {
  */
 
 Task.prototype.addTargets = function(task) {
+  utils.run(this, 'task', task);
   for (var key in task) {
     if (task.hasOwnProperty(key)) {
       var val = task[key];
@@ -53,6 +62,7 @@ Task.prototype.addTargets = function(task) {
       }
     }
   }
+  return this;
 };
 
 /**
@@ -61,8 +71,17 @@ Task.prototype.addTargets = function(task) {
  *
  * ```js
  * task.addTarget('foo', {
- *   src: '*.hbs',
- *   dest: 'templates/'
+ *   src: 'templates/*.hbs',
+ *   dest: 'site'
+ * });
+ *
+ * // other configurations are possible
+ * task.addTarget('foo', {
+ *   options: {cwd: 'templates'}
+ *   files: [
+ *     {src: '*.hbs', dest: 'site'},
+ *     {src: '*.md', dest: 'site'}
+ *   ]
  * });
  * ```
  * @param {String} `name`
@@ -73,11 +92,14 @@ Task.prototype.addTargets = function(task) {
 
 Task.prototype.addTarget = function(name, config) {
   if (typeof name !== 'string') {
-    throw new TypeError('addTarget expects name to be a string');
+    throw new TypeError('expected a string');
+  }
+  if (!config || typeof config !== 'object') {
+    throw new TypeError('expected an object');
   }
 
-  var target = new util.Target(this.options);
-  util.define(target, '_name', name);
+  var target = new Target(this.options);
+  define(target, '_name', name);
 
   utils.run(this, 'target', target);
   target.addFiles(config);
